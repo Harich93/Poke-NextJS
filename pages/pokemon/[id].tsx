@@ -4,6 +4,9 @@ import { MainLayout } from "../../layouts"
 import { Pokemon } from '../../interfaces';
 import { Button, Card, Container, Grid, Text } from "@nextui-org/react";
 import Image from "next/image";
+import { existInfavorites, toggleFavorites } from "../../utils/localFavorites";
+import { useState } from "react";
+import confetti from 'canvas-confetti';
 
 interface Props {
   pokemon: Pokemon
@@ -11,16 +14,53 @@ interface Props {
 
 const PokemonDetail: NextPage<Props> = ({ pokemon }) => {
 
-  const saveFav = () => {
-    let favorites: number[] = JSON.parse( localStorage.getItem('favorites' || '[]') || '[]');
+  const [isInFavorites, setIsInFavorites] = useState( existInfavorites(pokemon.id) )
 
-    favorites.includes(pokemon.id)
-      ? favorites = favorites.filter( id => id !== pokemon.id )
-      : (
-        favorites.push(pokemon.id),
-        localStorage.setItem('favorites', JSON.stringify(favorites))
-      )
+  const onToggleFavorite = () => {
+    toggleFavorites( pokemon.id );
+    setIsInFavorites(!isInFavorites);
+
+    if( isInFavorites ) return;
+
+    startConfetti();
   }
+
+  const startConfetti = () => {
+    var count = 200;
+    var defaults = {
+      origin: { y: 0.7 }
+    };
+    
+    function fire(particleRatio: any, opts: any) {
+      confetti(Object.assign({}, defaults, opts, {
+        particleCount: Math.floor(count * particleRatio)
+      }));
+    }
+    
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+    fire(0.2, {
+      spread: 60,
+    });
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2
+    });
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  }
+  
 
 
   return (
@@ -41,8 +81,13 @@ const PokemonDetail: NextPage<Props> = ({ pokemon }) => {
           <Card isHoverable css={{ padding: '30px' }}>
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }} >
               <Text transform="capitalize" h1>{ pokemon.name }</Text>
-              <Button color='gradient' ghost onClick={saveFav}>
-                Guardar en favoritos
+              <Button 
+                color='gradient'
+                onClick={onToggleFavorite}
+              >
+                {
+                  !isInFavorites ? 'Guardar en favoritos' : 'En favoritos'
+                }
               </Button>
             </Card.Header>
             <Card.Body>

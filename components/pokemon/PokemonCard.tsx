@@ -25,10 +25,10 @@ export const PokemonCard: FC<Props> = ({pokemon}) => {
             >
             <Card.Body css={{ p: 1 }}>
                 <Card.Image 
-                src={ pokemon.img }
-                alt={ `icono ${pokemon.name}` }
-                width='100%'
-                height={ 140 }
+                    src={ pokemon.img }
+                    alt={ `icono ${pokemon.name}` }
+                    width='100%'
+                    height={ 140 }
                 />
             </Card.Body>
             <Card.Footer>
