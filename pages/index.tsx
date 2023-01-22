@@ -13,7 +13,7 @@ interface Props {
 const Home: NextPage<Props> = ({ pokemons }) => {
 
   return (
-    <MainLayout title="Nuevo titulo">
+    <MainLayout title="Pokemons">
       <Grid.Container gap={2} justify='flex-start'>
         {
           pokemons.map( p=> 
